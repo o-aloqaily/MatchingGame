@@ -3,6 +3,7 @@ let openCards = [];
 let matchedCards = 0;
 let isFirstCardClick = true;
 let timerInterval = null;
+let unmatchedTimeout = null;
 let timer = 0;
 document.addEventListener('DOMContentLoaded', gameLoaded);
 
@@ -44,8 +45,8 @@ function setShuffledCards() {
 
 // shuffle, reset counter, reset stars, reset cards.
 function restartGame() {
-  gameLoaded();
   resetCards();
+  gameLoaded();
   resetCounter();
   resetStars();
   stopTimer();
@@ -135,7 +136,7 @@ function alertUnmatched() {
     card.classList.remove('open');
     card.classList.add('unmatched');
   });
-  setTimeout(cardsDidNotMatch, 1000);
+   unmatchedTimeout = setTimeout(cardsDidNotMatch, 1000);
 }
 
 function cardsDidNotMatch() {
@@ -259,6 +260,12 @@ function resetCards() {
     }
     if(cardClasses.includes('match')) {
       card.classList.remove('match');
+    }
+    if(cardClasses.includes('unmatched')) {
+      clearTimeout(unmatchedTimeout);
+      card.classList.remove('unmatched');
+      enableClicks();
+      // since cards are disabled when two cards are not matched, enable it now!
     }
   });
   openCards = [];
